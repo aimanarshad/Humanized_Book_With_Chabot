@@ -1,0 +1,27 @@
+<launch>
+  <arg name="world" default="worlds/empty.world"/>
+  <arg name="model_sdf" default="$(find-pkg-share gazebo_sim)/models/humanoid/humanoid.sdf"/>
+
+  <!-- Launch Gazebo simulation with the humanoid model -->
+  <include file="$(find-pkg-share gazebo_ros)/launch/gazebo.launch.py">
+    <arg name="world" value="$(arg world)"/>
+  </include>
+
+  <node name="spawn_humanoid" pkg="gazebo_ros" exec="spawn_entity.py" output="screen"
+        arguments="-entity humanoid -file $(arg model_sdf) -x 0 -y 0 -z 1"/>
+
+  <!-- Capstone Project Nodes -->
+  <node pkg="capstone" exec="voice_command_node.py" name="voice_command_node" output="screen"/>
+  <node pkg="capstone" exec="perception_node.py" name="perception_node" output="screen"/>
+  <node pkg="capstone" exec="llm_planner_node.py" name="llm_planner_node" output="screen"/>
+  <node pkg="capstone" exec="action_server_node.py" name="action_server_node" output="screen"/>
+
+  <!-- VLA Pipeline Nodes (if part of Capstone integration) -->
+  <!-- node pkg="vla_pipeline" exec="whisper_node.py" name="whisper_node" output="screen"/ -->
+  <!-- node pkg="vla_pipeline" exec="llm_goal_planner.py" name="vla_llm_goal_planner_node" output="screen"/ -->
+  <!-- node pkg="vla_pipeline" exec="robot_action_server.py" name="vla_robot_action_server" output="screen"/ -->
+
+  <!-- Isaac Pipeline Inference Node (if integrated with live camera feed) -->
+  <!-- node pkg="isaac_pipeline" exec="inference_node.py" name="isaac_inference_node" output="screen"/ -->
+
+</launch>

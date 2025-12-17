@@ -1,0 +1,20 @@
+
+<launch>
+  <arg name="world" default="worlds/empty.world"/>
+  <arg name="model" default="$(find-pkg-share gazebo_sim)/models/humanoid/humanoid.sdf"/>
+
+  <include file="$(find-pkg-share gazebo_ros)/launch/gazebo.launch.py">
+    <arg name="world" value="$(arg world)"/>
+  </include>
+
+  <node name="spawn_entity" pkg="gazebo_ros" exec="spawn_entity.py" output="screen"
+        arguments="-entity humanoid -file $(arg model) -x 0 -y 0 -z 1"/>
+
+  <!-- You might need to add a static transform publisher if your camera frame is not directly connected to the base_link -->
+  <!-- <node pkg="tf2_ros" exec="static_transform_publisher" name="base_link_to_depth_camera_link" -->
+  <!--   args="0 0 0.3 0 0 0 base_link depth_camera_link" /> -->
+
+  <!-- Launch rclpy node to log sensor data -->
+  <node pkg="gazebo_sim" exec="sensor_logger_node.py" name="sensor_logger_node" output="screen"/>
+
+</launch>
